@@ -46,7 +46,10 @@ const countFor = (label: string) => posts.filter((post) => post.data.category ==
 
   <section class="sidebar-card sidebar-links">
     <h2>链接</h2>
-    <a class="sidebar-link" href={siteConfig.siblingSite.href} rel="me">{siteConfig.siblingSite.name}：AI 工具与折腾实践 ↗</a>
+    <a class="sidebar-link" href={siteConfig.siblingSite.href} target="_blank" rel="me noopener noreferrer">{siteConfig.siblingSite.name} ↗</a>
+    {siteConfig.externalLinks.map((link) => (
+      <a class="sidebar-link" href={link.href} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>
+    ))}
     <a class="sidebar-link" href="/rss.xml">RSS 订阅</a>
   </section>
 </aside>

@@ -34,6 +34,12 @@ export const siteConfig = {
     description: "AI 工具、AI Coding、开发环境与网络折腾笔记",
     href: "https://zhetengxia.com/",
   },
+  externalLinks: [
+    {
+      name: "AI Systems Performance Engineering",
+      href: "https://aispe.notlate.cn/",
+    },
+  ],
   nav: [
     { label: "首页", href: "https://notlate.cn/" },
     ...homeCategories.map(({ label, href }) => ({ label, href })),
