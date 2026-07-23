@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import { siteConfig } from "../site.config";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  headings?: Heading[];
+  jsonLd?: Record<string, unknown>;
+  recommendedPosts?: CollectionEntry<"posts">[];
+}
+
+const { post, headings = [], jsonLd, recommendedPosts = [] } = Astro.props;
+const slug = post.data.slug;
+const formatDate = (date: Date) => date.toLocaleDateString("zh-CN", { timeZone: "UTC" });
+const canonicalPath = `/blog/${slug}`;
+const published = formatDate(post.data.pubDate);
+const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : undefined;
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonicalPath={canonicalPath}
+  pageType="article"
+  jsonLd={jsonLd}
+>
+  <div class="article-shell">
+    <article class="article">
+      <header class="article-header">
+        <p class="eyebrow">{post.data.category}</p>
+        <h1>{post.data.title}</h1>
+        <div class="meta">
+          <span>发布：{published}</span>
+          {updated && <span>更新：{updated}</span>}
+          <span>原博客园 ID：{post.data.legacyId}</span>
+        </div>
+        <div class="tag-list">
+          {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      </header>
+
+      <div class="article-body">
+        <slot />
+      </div>
+
+      <aside class="sibling-callout">
+        <strong>还在折腾 AI 工具？</strong>
+        <span>Claude、Codex、开发环境和网络配置实践，见</span>
+        <a href={siteConfig.siblingSite.href}>{siteConfig.siblingSite.name} ↗</a>
+      </aside>
+
+      {post.data.sourceUrl && (
+        <p class="source-note">导出来源：<a href={post.data.sourceUrl}>博客园原文</a></p>
+      )}
+    </article>
+
+    <aside class="article-sidebar" aria-label="文章导航">
+      {headings.length > 0 && (
+        <nav class="toc">
+          <h2>目录</h2>
+          <ol>
+            {headings.filter((heading) => heading.depth <= 3).map((heading) => (
+              <li class={`toc-depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      {recommendedPosts.length > 0 && (
+        <section class="recommendations">
+          <h2>同类文章</h2>
+          <ul>
+            {recommendedPosts.map((recommended) => (
+              <li><a href={`/blog/${recommended.data.slug}`}>{recommended.data.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </aside>
+  </div>
+</BaseLayout>

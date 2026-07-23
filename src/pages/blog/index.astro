@@ -1,0 +1,27 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("posts")).sort(
+  (a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf(),
+);
+const date = (value: Date) => value.toLocaleDateString("zh-CN", { timeZone: "UTC" });
+---
+
+<BaseLayout title="全部文章" description="NotLate 的 AI 编译器、推荐系统与机器学习工程文章。" canonicalPath="/blog">
+  <section class="archive-header">
+    <p class="eyebrow">ARCHIVE</p>
+    <h1>全部文章</h1>
+    <p>{posts.length} 篇技术文章，按最近更新时间排序。</p>
+  </section>
+  <section class="section">
+    <div class="post-list">
+      {posts.map((post) => (
+        <a class="post-row" href={`/blog/${post.data.slug}`}>
+          <time datetime={post.data.pubDate.toISOString()}>{date(post.data.updatedDate ?? post.data.pubDate)}</time>
+          <div><p class="meta">{post.data.category} · {post.data.tags.slice(0, 3).join(" / ")}</p><h2>{post.data.title}</h2><p>{post.data.description}</p></div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

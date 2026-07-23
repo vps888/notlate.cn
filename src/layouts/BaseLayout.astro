@@ -1,0 +1,76 @@
+---
+import "../styles/global.css";
+import { siteConfig } from "../site.config";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  pageType?: "website" | "article";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title: pageTitle, description: pageDescription, canonicalPath, pageType = "website", jsonLd } = Astro.props;
+const title = pageTitle ? `${pageTitle} | ${siteConfig.shortName}` : siteConfig.name;
+const description = pageDescription ?? siteConfig.description;
+const path = (canonicalPath ?? Astro.url.pathname) === "/"
+  ? "/"
+  : (canonicalPath ?? Astro.url.pathname).replace(/\/+$/, "");
+const canonicalUrl = new URL(path, `https://${siteConfig.domain}`).href;
+const structuredData = jsonLd
+  ? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
+  : undefined;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
+    <link rel="icon" href="data:," />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">NL</span>
+          <span>{siteConfig.name}</span>
+        </a>
+        <nav class="nav" aria-label="主导航">
+          {siteConfig.nav.map((item) => (
+            <a
+              href={item.href}
+              target={"external" in item && item.external ? "_blank" : undefined}
+              rel={"external" in item && item.external ? "me" : undefined}
+            >{item.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main class="page">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© {new Date().getFullYear()} {siteConfig.author} · {siteConfig.shortName}</p>
+        <p>
+          <a href={siteConfig.siblingSite.href} rel="me">{siteConfig.siblingSite.name}</a>
+          <span> · AI 工具与折腾实践</span>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

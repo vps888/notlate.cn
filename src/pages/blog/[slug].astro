@@ -1,0 +1,38 @@
+---
+import { getCollection, render } from "astro:content";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { siteConfig } from "../../site.config";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const allPosts = (await getCollection("posts")).sort(
+  (a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf(),
+);
+const recommendedPosts = allPosts
+  .filter((item) => item.id !== post.id && item.data.category === post.data.category)
+  .slice(0, 5);
+const canonicalUrl = new URL(`/blog/${post.data.slug}`, `https://${siteConfig.domain}`).href;
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  url: canonicalUrl,
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  articleSection: post.data.category,
+  keywords: post.data.tags,
+  author: { "@type": "Person", name: siteConfig.author },
+  inLanguage: "zh-CN",
+};
+---
+
+<PostLayout post={post} headings={headings} jsonLd={articleJsonLd} recommendedPosts={recommendedPosts}>
+  <Content />
+</PostLayout>
