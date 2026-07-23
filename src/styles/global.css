@@ -69,7 +69,7 @@ a { color: inherit; }
 }
 .nav a:hover { background: var(--accent-soft); color: var(--accent-dark); }
 
-.page { padding: 28px 0 64px; }
+.page { padding: 28px 0 24px; }
 .blog-layout { display: grid; grid-template-columns: minmax(0, 1fr) 286px; gap: 26px; align-items: start; }
 .content-column { min-width: 0; }
 .content-heading {
