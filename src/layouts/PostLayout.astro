@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import BlogSidebar from "../components/BlogSidebar.astro";
 import BaseLayout from "./BaseLayout.astro";
-import { siteConfig } from "../site.config";
+import { homeCategories, siteConfig } from "../site.config";
 
 interface Heading {
   depth: number;
@@ -24,6 +24,7 @@ const formatDate = (date: Date) => date.toLocaleDateString("zh-CN", { timeZone: 
 const canonicalPath = `/blog/${slug}`;
 const published = formatDate(post.data.pubDate);
 const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : undefined;
+const category = homeCategories.find((item) => item.label === post.data.category);
 ---
 
 <BaseLayout
@@ -35,6 +36,18 @@ const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : unde
 >
   <div class="article-shell">
     <article class="article">
+      <nav class="breadcrumbs" aria-label="面包屑">
+        <ol>
+          <li><a href="https://notlate.cn/">首页</a></li>
+          <li>
+            {category
+              ? <a href={category.href}>{post.data.category}</a>
+              : <span>{post.data.category}</span>}
+          </li>
+          <li aria-current="page">{post.data.title}</li>
+        </ol>
+      </nav>
+
       <header class="article-header">
         <h1>{post.data.title}</h1>
         <div class="meta">
@@ -60,6 +73,11 @@ const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : unde
       {post.data.sourceUrl && (
         <p class="source-note">导出来源：<a href={post.data.sourceUrl}>博客园原文</a></p>
       )}
+
+      <nav class="article-actions" aria-label="文章操作">
+        <a href="https://notlate.cn/">← 返回首页</a>
+        {category && <a href={category.href}>返回“{category.label}”分类</a>}
+      </nav>
     </article>
 
     <aside class="article-sidebar" aria-label="博客信息与文章导航">

@@ -157,6 +157,13 @@ a { color: inherit; }
 /* Article pages keep the familiar cnblogs two-column reading layout. */
 .article-shell { display: grid; grid-template-columns: minmax(0, 1fr) 286px; gap: 26px; align-items: start; }
 .article { min-width: 0; background: var(--surface); border: 1px solid var(--line); padding: 30px 38px 36px; }
+.breadcrumbs { border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; margin: -4px 0 22px; padding-bottom: 12px; }
+.breadcrumbs ol { align-items: center; display: flex; flex-wrap: wrap; gap: 5px 8px; list-style: none; margin: 0; padding: 0; }
+.breadcrumbs li { min-width: 0; }
+.breadcrumbs li + li::before { color: #b0b6bc; content: "/"; margin-right: 8px; }
+.breadcrumbs li[aria-current="page"] { max-width: min(60%, 560px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.breadcrumbs a { color: var(--accent); text-decoration: none; }
+.breadcrumbs a:hover { text-decoration: underline; }
 .article-header { border-bottom: 1px solid var(--line); padding-bottom: 20px; }
 .article-header h1 { color: #2f3d4a; font-size: clamp(28px, 4vw, 38px); font-weight: 600; line-height: 1.35; margin: 0 0 12px; }
 .article-header .meta { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 13px; gap: 5px 14px; }
@@ -192,6 +199,11 @@ a { color: inherit; }
 .sibling-callout a { color: var(--accent); font-weight: 600; }
 .source-note { color: var(--muted); font-size: 12px; margin: 22px 0 0; }
 .source-note a { color: var(--accent); }
+.article-actions { align-items: center; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding-top: 20px; }
+.article-actions a { border: 1px solid var(--line); color: var(--accent); font-size: 14px; padding: 7px 13px; text-decoration: none; }
+.article-actions a:first-child { background: var(--accent); border-color: var(--accent); color: #fff; }
+.article-actions a:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-dark); }
+.article-actions a:first-child:hover { background: var(--accent-dark); color: #fff; }
 
 .site-footer { background: #e9edf1; border-top: 1px solid #dce1e5; color: #78838d; font-size: 13px; }
 .footer-inner { display: flex; justify-content: space-between; gap: 14px; padding: 22px 0; }
@@ -222,6 +234,7 @@ a { color: inherit; }
   .blog-sidebar { grid-template-columns: 1fr; }
   .profile-card { grid-column: auto; }
   .article { padding: 23px 18px 28px; }
+  .breadcrumbs li[aria-current="page"] { max-width: 100%; white-space: normal; }
   .footer-inner { flex-direction: column; padding: 18px 0; }
 }
 
