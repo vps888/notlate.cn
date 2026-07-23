@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import BlogSidebar from "../../components/BlogSidebar.astro";
+import Pagination from "../../components/Pagination.astro";
+import PostList from "../../components/PostList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const pageSize = 7;
+
+export async function getStaticPaths() {
+  const pageSize = 7;
+  const posts = (await getCollection("posts")).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  const totalPages = Math.ceil(posts.length / pageSize);
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+    const page = index + 2;
+    return { params: { page: String(page) }, props: { page, posts } };
+  });
+}
+
+const { page, posts } = Astro.props;
+const pagePosts = posts.slice((page - 1) * pageSize, page * pageSize);
+const totalPages = Math.ceil(posts.length / pageSize);
+const canonicalPath = `/page/${page}`;
+---
+
+<BaseLayout
+  title={`所有文章 - 第 ${page} 页`}
+  description="MLIR、AI 编译器、推荐系统与计算广告文章。"
+  canonicalPath={canonicalPath}
+>
+  <div class="blog-layout">
+    <section class="content-column">
+      <header class="content-heading">
+        <p class="content-kicker">ARCHIVE</p>
+        <h1>所有文章</h1>
+        <p>按最近发布时间排序。</p>
+      </header>
+
+      <PostList posts={pagePosts} />
+      <Pagination basePath="/" currentPage={page} totalPages={totalPages} />
+    </section>
+
+    <BlogSidebar posts={posts} />
+  </div>
+</BaseLayout>
