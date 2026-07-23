@@ -132,17 +132,24 @@ function categoryFor(title) {
   if (/MLIR|ONNX|IREE|inductor|Triton|TVM|Ascend|AI编译器|SSA|Fuse|linalg|Tile|MemRef|Affine|Transform|ShapeHelper|IndexExpr|DialectBuilder|Flow方言|AutoFuse|Pass机制/i.test(title)) {
     return "AI 编译器";
   }
-  if (/推荐|小红书|Embedding|机器学习|概率|广告|CTR|点击率|ADX|DSP|SSP|竞价|特征|冷启动|重排|召回|排序|模型评估/i.test(title)) {
-    return "推荐系统与机器学习";
+  if (/^无需服务器个性化域名重定向到其他网站$/i.test(title)) {
+    return "折腾实践";
   }
-  return "工程与算法";
+  if (/广告|ADX|DSP|SSP|竞价|CTR|点击率|程序化交易/i.test(title)) {
+    return "计算广告";
+  }
+  if (/推荐|小红书|Embedding|机器学习|概率|特征|冷启动|重排|召回|排序|模型评估/i.test(title)) {
+    return "推荐系统";
+  }
+  // There is no generic engineering bucket on the technical site anymore.
+  return "计算广告";
 }
 
 function tagsFor(title, category) {
   const tags = new Set([category]);
   const rules = [
     [/MLIR/i, "MLIR"], [/ONNX/i, "ONNX-MLIR"], [/IREE/i, "IREE"], [/Triton/i, "Triton"], [/TVM/i, "TVM"], [/Ascend/i, "Ascend"],
-    [/推荐|小红书/i, "推荐系统"], [/Embedding/i, "Embedding"], [/机器学习/i, "机器学习"], [/广告|ADX|DSP|SSP|竞价/i, "计算广告"],
+    [/推荐|小红书/i, "推荐系统"], [/Embedding/i, "Embedding"], [/机器学习/i, "机器学习"], [/广告|ADX|DSP|SSP|竞价/i, "计算广告"], [/域名|Cloudflare/i, "域名"],
     [/Attention|QKV/i, "Attention"], [/Linalg|linalg/i, "Linalg"], [/Affine/i, "Affine"], [/MemRef/i, "MemRef"], [/Pass/i, "编译器 Pass"],
   ];
   for (const [pattern, tag] of rules) if (pattern.test(title)) tags.add(tag);

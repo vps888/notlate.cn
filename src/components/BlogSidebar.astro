@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { homeCategories, siteConfig } from "../site.config";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+
+const { posts } = Astro.props;
+const latest = posts.slice(0, 5);
+const countFor = (label: string) => posts.filter((post) => post.data.category === label).length;
+---
+
+<aside class="blog-sidebar" aria-label="博客信息">
+  <section class="sidebar-card profile-card">
+    <div class="profile-heading">
+      <img src={siteConfig.avatar} alt={`${siteConfig.author}头像`} loading="lazy" decoding="async" />
+      <div>
+        <h2>{siteConfig.author}</h2>
+        <p>{siteConfig.name}</p>
+      </div>
+    </div>
+    <p class="profile-subtitle">{siteConfig.subtitle}</p>
+    <a class="sidebar-link" href="/blog">查看全部 {posts.length} 篇文章 →</a>
+  </section>
+
+  <section class="sidebar-card">
+    <h2>文章分类</h2>
+    <ul class="sidebar-list category-list">
+      {homeCategories.map((category) => (
+        <li>
+          <a href={category.href}>{category.label}</a>
+          <span>{countFor(category.label)}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="sidebar-card">
+    <h2>最新文章</h2>
+    <ol class="sidebar-list latest-list">
+      {latest.map((post) => (
+        <li><a href={`/blog/${post.data.slug}`}>{post.data.title}</a></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="sidebar-card sidebar-links">
+    <h2>链接</h2>
+    <a class="sidebar-link" href={siteConfig.siblingSite.href} rel="me">{siteConfig.siblingSite.name}：AI 工具与折腾实践 ↗</a>
+    <a class="sidebar-link" href="/rss.xml">RSS 订阅</a>
+  </section>
+</aside>

@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const allPosts = (await getCollection("posts")).sort(
-  (a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const recommendedPosts = allPosts
   .filter((item) => item.id !== post.id && item.data.category === post.data.category)
@@ -33,6 +33,6 @@ const articleJsonLd = {
 };
 ---
 
-<PostLayout post={post} headings={headings} jsonLd={articleJsonLd} recommendedPosts={recommendedPosts}>
+<PostLayout post={post} headings={headings} jsonLd={articleJsonLd} recommendedPosts={recommendedPosts} sidebarPosts={allPosts}>
   <Content />
 </PostLayout>

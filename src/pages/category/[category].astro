@@ -1,5 +1,8 @@
 ---
 import { getCollection } from "astro:content";
+import BlogSidebar from "../../components/BlogSidebar.astro";
+import Pagination from "../../components/Pagination.astro";
+import PostList from "../../components/PostList.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { homeCategories, siteConfig } from "../../site.config";
 
@@ -8,10 +11,13 @@ export function getStaticPaths() {
 }
 
 const { category } = Astro.props;
-const posts = (await getCollection("posts"))
-  .filter((post) => post.data.category === category.label)
-  .sort((a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf());
-const date = (value: Date) => value.toLocaleDateString("zh-CN", { timeZone: "UTC" });
+const allPosts = (await getCollection("posts")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const posts = allPosts.filter((post) => post.data.category === category.label);
+const pageSize = 7;
+const totalPages = Math.ceil(posts.length / pageSize);
+const pagePosts = posts.slice(0, pageSize);
 const canonicalPath = `/category/${category.id}`;
 const canonicalUrl = new URL(canonicalPath, `https://${siteConfig.domain}`).href;
 const jsonLd = {
@@ -22,26 +28,24 @@ const jsonLd = {
   url: canonicalUrl,
   mainEntity: {
     "@type": "ItemList",
-    numberOfItems: posts.length,
-    itemListElement: posts.map((post, index) => ({ "@type": "ListItem", position: index + 1, name: post.data.title, url: new URL(`/blog/${post.data.slug}`, `https://${siteConfig.domain}`).href })),
+    numberOfItems: pagePosts.length,
+    itemListElement: pagePosts.map((post, index) => ({ "@type": "ListItem", position: index + 1, name: post.data.title, url: new URL(`/blog/${post.data.slug}`, `https://${siteConfig.domain}`).href })),
   },
 };
 ---
 
-<BaseLayout title={`${category.label}文章`} description={category.description} canonicalPath={canonicalPath} jsonLd={jsonLd}>
-  <section class="archive-header">
-    <p class="eyebrow">CATEGORY</p>
-    <h1>{category.label}</h1>
-    <p>{category.description} · {posts.length} 篇</p>
-  </section>
-  <section class="section">
-    <div class="post-list">
-      {posts.map((post) => (
-        <a class="post-row" href={`/blog/${post.data.slug}`}>
-          <time datetime={post.data.pubDate.toISOString()}>{date(post.data.updatedDate ?? post.data.pubDate)}</time>
-          <div><p class="meta">{post.data.tags.slice(0, 3).join(" / ")}</p><h2>{post.data.title}</h2><p>{post.data.description}</p></div>
-        </a>
-      ))}
-    </div>
-  </section>
+<BaseLayout title={category.label} description={category.description} canonicalPath={canonicalPath} jsonLd={jsonLd}>
+  <div class="blog-layout">
+    <section class="content-column">
+      <header class="content-heading">
+        <p class="content-kicker">CATEGORY</p>
+        <h1>{category.label}</h1>
+        <p>{category.description}</p>
+      </header>
+      <PostList posts={pagePosts} />
+      <Pagination basePath={canonicalPath} currentPage={1} totalPages={totalPages} />
+    </section>
+
+    <BlogSidebar posts={allPosts} />
+  </div>
 </BaseLayout>

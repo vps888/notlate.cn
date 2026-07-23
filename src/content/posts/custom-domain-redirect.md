@@ -5,8 +5,8 @@ slug: "custom-domain-redirect"
 legacyId: 18706147
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706147"
 pubDate: 2025-02-09
-category: "工程与算法"
-tags: ["工程与算法"]
+category: "折腾实践"
+tags: ["折腾实践","域名"]
 featured: false
 ---
 

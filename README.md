@@ -1,6 +1,6 @@
 # NotLate 技术博客
 
-`notlate.cn` 的独立 Astro 静态站点，内容聚焦 MLIR、AI 编译器、推荐系统与机器学习工程实践。
+`notlate.cn` 的独立 Astro 静态站点，内容聚焦 MLIR、AI 编译器、推荐系统、计算广告与折腾实践。
 
 ## 本地运行
 
@@ -28,7 +28,7 @@ unzip -p ~/Downloads/cnblogs_blog_notlate-cn.*.zip > /tmp/notlate-blog.db
 node ./import-cnblogs-export.mjs /tmp/notlate-blog.db src/content/posts
 ```
 
-脚本会把 AI 编译器、推荐系统和机器学习文章导入本站，并把 AI 工具/个人折腾文章列入 `migration-report.json`，不会自动覆盖 `zhetengxia.com` 的现有文章。
+脚本会把 AI 编译器、推荐系统、计算广告、折腾实践和机器学习文章导入本站，并把 AI 工具/个人折腾文章列入 `migration-report.json`，不会自动覆盖 `zhetengxia.com` 的现有文章。
 
 ## 内容边界与互链
 

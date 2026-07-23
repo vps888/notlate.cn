@@ -1,15 +1,14 @@
 ---
 import { getCollection } from "astro:content";
+import BlogSidebar from "../components/BlogSidebar.astro";
+import PostList from "../components/PostList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { homeCategories, siteConfig } from "../site.config";
+import { siteConfig } from "../site.config";
 
 const posts = (await getCollection("posts")).sort(
-  (a, b) => (b.data.updatedDate ?? b.data.pubDate).valueOf() - (a.data.updatedDate ?? a.data.pubDate).valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-const featured = posts.filter((post) => post.data.featured).slice(0, 6);
-const featuredIds = new Set(featured.map((post) => post.id));
-const recent = posts.filter((post) => !featuredIds.has(post.id));
-const date = (value: Date) => value.toLocaleDateString("zh-CN", { timeZone: "UTC" });
+const latestPosts = posts.slice(0, 7);
 const homeUrl = "https://notlate.cn/";
 const jsonLd = [
   { "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, url: homeUrl, description: siteConfig.description, inLanguage: "zh-CN" },
@@ -18,48 +17,22 @@ const jsonLd = [
 ---
 
 <BaseLayout canonicalPath="/" jsonLd={jsonLd}>
-  <section class="hero">
-    <p class="eyebrow">NOTLATE TECHNICAL NOTES</p>
-    <h1>{siteConfig.tagline}</h1>
-    <p class="hero-description">{siteConfig.description} 文章来自长期代码阅读、源码分析和工程实践。</p>
-    <div class="hero-links">
-      <a class="button" href="/blog">浏览全部文章</a>
-      <a class="text-link" href={siteConfig.siblingSite.href}>去折腾博客看 AI 工具实践 ↗</a>
-    </div>
-  </section>
+  <div class="blog-layout">
+    <section class="content-column">
+      <header class="content-heading">
+        <p class="content-kicker">{siteConfig.name}</p>
+        <h1>所有文章</h1>
+        <p>记录 MLIR、AI 编译器、推荐系统、计算广告与折腾实践。</p>
+      </header>
 
-  {featured.length > 0 && (
-    <section class="section">
-      <div class="section-heading"><h2>重点文章</h2><span>值得优先阅读</span></div>
-      <div class="featured-grid">
-        {featured.map((post) => (
-          <a class="featured-card" href={`/blog/${post.data.slug}`}>
-            <p class="meta"><span>{post.data.category}</span><span>{date(post.data.pubDate)}</span></p>
-            <h3>{post.data.title}</h3>
-            <p>{post.data.description}</p>
-          </a>
-        ))}
-      </div>
+      <PostList posts={latestPosts} />
+
+      <nav class="archive-more" aria-label="文章归档">
+        <span>首页展示最近 7 篇文章</span>
+        <a href="/blog">查看全部 {posts.length} 篇 →</a>
+      </nav>
     </section>
-  )}
 
-  {homeCategories.map((category) => {
-    const categoryPosts = recent.filter((post) => post.data.category === category.label).slice(0, 6);
-    return (
-      <section class="section" id={category.id}>
-        <div class="section-heading">
-          <div><h2>{category.label}</h2><p>{category.description}</p></div>
-          <a class="text-link" href={category.href}>查看全部 →</a>
-        </div>
-        <div class="post-list">
-          {categoryPosts.map((post) => (
-            <a class="post-row" href={`/blog/${post.data.slug}`}>
-              <time datetime={post.data.pubDate.toISOString()}>{date(post.data.updatedDate ?? post.data.pubDate)}</time>
-              <div><h3>{post.data.title}</h3><p>{post.data.description}</p></div>
-            </a>
-          ))}
-        </div>
-      </section>
-    );
-  })}
+    <BlogSidebar posts={posts} />
+  </div>
 </BaseLayout>

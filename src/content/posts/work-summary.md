@@ -5,8 +5,8 @@ slug: "work-summary"
 legacyId: 18706029
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706029"
 pubDate: 2025-02-09
-category: "工程与算法"
-tags: ["工程与算法"]
+category: "计算广告"
+tags: ["计算广告"]
 featured: false
 ---
 

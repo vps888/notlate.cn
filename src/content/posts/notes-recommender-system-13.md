@@ -5,8 +5,8 @@ slug: "notes-recommender-system-13"
 legacyId: 18706005
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706005"
 pubDate: 2025-02-09
-category: "推荐系统与机器学习"
-tags: ["推荐系统与机器学习","推荐系统"]
+category: "推荐系统"
+tags: ["推荐系统"]
 featured: false
 ---
 

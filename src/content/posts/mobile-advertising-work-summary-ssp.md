@@ -5,8 +5,8 @@ slug: "mobile-advertising-work-summary-ssp"
 legacyId: 18706033
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706033"
 pubDate: 2025-02-09
-category: "推荐系统与机器学习"
-tags: ["推荐系统与机器学习","计算广告"]
+category: "计算广告"
+tags: ["计算广告"]
 featured: false
 ---
 

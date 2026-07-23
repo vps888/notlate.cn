@@ -5,8 +5,8 @@ slug: "notes-xiaohongshu-recommender-system-study-04"
 legacyId: 18705970
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18705970"
 pubDate: 2025-02-09
-category: "推荐系统与机器学习"
-tags: ["推荐系统与机器学习","推荐系统"]
+category: "推荐系统"
+tags: ["推荐系统"]
 featured: false
 ---
 

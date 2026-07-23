@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import BlogSidebar from "../components/BlogSidebar.astro";
 import BaseLayout from "./BaseLayout.astro";
 import { siteConfig } from "../site.config";
 
@@ -14,9 +15,10 @@ interface Props {
   headings?: Heading[];
   jsonLd?: Record<string, unknown>;
   recommendedPosts?: CollectionEntry<"posts">[];
+  sidebarPosts?: CollectionEntry<"posts">[];
 }
 
-const { post, headings = [], jsonLd, recommendedPosts = [] } = Astro.props;
+const { post, headings = [], jsonLd, recommendedPosts = [], sidebarPosts = [] } = Astro.props;
 const slug = post.data.slug;
 const formatDate = (date: Date) => date.toLocaleDateString("zh-CN", { timeZone: "UTC" });
 const canonicalPath = `/blog/${slug}`;
@@ -34,12 +36,11 @@ const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : unde
   <div class="article-shell">
     <article class="article">
       <header class="article-header">
-        <p class="eyebrow">{post.data.category}</p>
         <h1>{post.data.title}</h1>
         <div class="meta">
-          <span>发布：{published}</span>
+          <span>posted @ {siteConfig.author} {published}</span>
+          <span>分类：{post.data.category}</span>
           {updated && <span>更新：{updated}</span>}
-          <span>原博客园 ID：{post.data.legacyId}</span>
         </div>
         <div class="tag-list">
           {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
@@ -61,7 +62,8 @@ const updated = post.data.updatedDate ? formatDate(post.data.updatedDate) : unde
       )}
     </article>
 
-    <aside class="article-sidebar" aria-label="文章导航">
+    <aside class="article-sidebar" aria-label="博客信息与文章导航">
+      {sidebarPosts.length > 0 && <BlogSidebar posts={sidebarPosts} />}
       {headings.length > 0 && (
         <nav class="toc">
           <h2>目录</h2>

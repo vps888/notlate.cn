@@ -5,8 +5,8 @@ slug: "machine-learning-probability-statistics-knowledge"
 legacyId: 18706030
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706030"
 pubDate: 2025-02-09
-category: "推荐系统与机器学习"
-tags: ["推荐系统与机器学习","机器学习"]
+category: "推荐系统"
+tags: ["推荐系统","机器学习"]
 featured: false
 ---
 

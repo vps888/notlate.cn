@@ -1,0 +1,60 @@
+---
+import { getCollection } from "astro:content";
+import BlogSidebar from "../../../../components/BlogSidebar.astro";
+import Pagination from "../../../../components/Pagination.astro";
+import PostList from "../../../../components/PostList.astro";
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import { homeCategories, siteConfig } from "../../../../site.config";
+
+const pageSize = 7;
+
+export async function getStaticPaths() {
+  const pageSize = 7;
+  const allPosts = (await getCollection("posts")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return homeCategories.flatMap((category) => {
+    const posts = allPosts.filter((post) => post.data.category === category.label);
+    const totalPages = Math.ceil(posts.length / pageSize);
+    return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+      const page = index + 2;
+      return {
+        params: { category: category.id, page: String(page) },
+        props: { allPosts, category, page, posts },
+      };
+    });
+  });
+}
+
+const { category, page, posts, allPosts } = Astro.props;
+const pagePosts = posts.slice((page - 1) * pageSize, page * pageSize);
+const totalPages = Math.ceil(posts.length / pageSize);
+const canonicalPath = `/category/${category.id}/page/${page}`;
+const canonicalUrl = new URL(canonicalPath, `https://${siteConfig.domain}`).href;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: `${category.label}文章 - 第 ${page} 页`,
+  description: category.description,
+  url: canonicalUrl,
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: pagePosts.length,
+    itemListElement: pagePosts.map((post, index) => ({ "@type": "ListItem", position: (page - 1) * pageSize + index + 1, name: post.data.title, url: new URL(`/blog/${post.data.slug}`, `https://${siteConfig.domain}`).href })),
+  },
+};
+---
+
+<BaseLayout title={`${category.label} - 第 ${page} 页`} description={category.description} canonicalPath={canonicalPath} jsonLd={jsonLd}>
+  <div class="blog-layout">
+    <section class="content-column">
+      <header class="content-heading">
+        <p class="content-kicker">CATEGORY</p>
+        <h1>{category.label}</h1>
+        <p>{category.description}</p>
+      </header>
+      <PostList posts={pagePosts} />
+      <Pagination basePath={`/category/${category.id}`} currentPage={page} totalPages={totalPages} />
+    </section>
+
+    <BlogSidebar posts={allPosts} />
+  </div>
+</BaseLayout>

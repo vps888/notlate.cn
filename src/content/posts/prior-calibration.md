@@ -5,8 +5,8 @@ slug: "prior-calibration"
 legacyId: 18706035
 sourceUrl: "https://www.cnblogs.com/notlate-cn/p/18706035"
 pubDate: 2025-02-09
-category: "工程与算法"
-tags: ["工程与算法"]
+category: "计算广告"
+tags: ["计算广告"]
 featured: false
 ---
 

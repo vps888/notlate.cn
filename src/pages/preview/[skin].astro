@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import BlogSidebar from "../../components/BlogSidebar.astro";
+import PostList from "../../components/PostList.astro";
+import { previewSkins } from "../../data/preview-skins";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteConfig } from "../../site.config";
+
+
+export function getStaticPaths() {
+  return previewSkins.map((skin) => ({ params: { skin: skin.id }, props: { skin } }));
+}
+
+const { skin } = Astro.props;
+const posts = (await getCollection("posts")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const latestPosts = posts.slice(0, 12);
+const canonicalPath = `/preview/${skin.id}`;
+---
+
+<BaseLayout
+  title={`${skin.label}预览`}
+  description={`${skin.label}本地预览`}
+  canonicalPath={canonicalPath}
+  skin={skin.id}
+  noIndex
+>
+  <section class="skin-preview-intro">
+    <div>
+      <p class="content-kicker">THEME PREVIEW</p>
+      <h1>{skin.label}</h1>
+      <p>{skin.description}</p>
+    </div>
+    <a href={skin.reference} target="_blank" rel="noreferrer">查看主题原站 ↗</a>
+  </section>
+
+  <nav class="skin-preview-tabs" aria-label="主题预览">
+    {previewSkins.map((item) => (
+      <a class={item.id === skin.id ? "is-active" : ""} href={`/preview/${item.id}`}>{item.label}</a>
+    ))}
+  </nav>
+
+  <div class="blog-layout">
+    <section class="content-column">
+      <header class="content-heading">
+        <p class="content-kicker">{siteConfig.name}</p>
+        <h2>文章</h2>
+        <p>以下内容来自博客园备份中的真实文章标题。</p>
+      </header>
+      <PostList posts={latestPosts} />
+    </section>
+    <BlogSidebar posts={posts} />
+  </div>
+</BaseLayout>

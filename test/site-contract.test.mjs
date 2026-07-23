@@ -27,6 +27,33 @@ test("site is configured as a static Cloudflare Pages project", async () => {
   assert.match(wrangler, /pages_build_output_dir\s*=\s*["']dist["']/);
 });
 
+test("homepage uses publication order and does not expose a standalone diary tab", async () => {
+  const homepage = await readFile(join(root, "src/pages/index.astro"), "utf8");
+  const siteConfig = await readFile(join(root, "src/site.config.ts"), "utf8");
+
+  assert.match(homepage, /b\.data\.pubDate\.valueOf\(\)\s*-\s*a\.data\.pubDate\.valueOf\(\)/);
+  assert.match(homepage, /posts\.slice\(0,\s*7\)/);
+  assert.doesNotMatch(siteConfig, /label:\s*["']随笔["']/);
+  assert.match(siteConfig, /label:\s*["']折腾实践 ↗["']/);
+  assert.match(siteConfig, /href:\s*["']https:\/\/zhetengxia\.com\//);
+});
+
+test("recommender and advertising posts use separate categories", async () => {
+  const files = (await readdir(join(root, "src/content/posts"))).filter((file) => file.endsWith(".md"));
+  const counts = {};
+  for (const file of files) {
+    const source = await readFile(join(root, "src/content/posts", file), "utf8");
+    const category = source.match(/^category:\s*"([^"]+)"/m)?.[1];
+    counts[category] = (counts[category] ?? 0) + 1;
+  }
+
+  assert.equal(counts["推荐系统"], 18);
+  assert.equal(counts["计算广告"], 12);
+  assert.equal(counts["折腾实践"], 1);
+  assert.equal(counts["推荐系统与机器学习"], undefined);
+  assert.equal(counts["工程与算法"], undefined);
+});
+
 test("each migrated article has stable SEO metadata", async () => {
   const posts = (await readdir(join(root, "src/content/posts"))).filter((file) => file.endsWith(".md"));
 

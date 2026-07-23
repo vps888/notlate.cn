@@ -8,9 +8,19 @@ interface Props {
   canonicalPath?: string;
   pageType?: "website" | "article";
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  skin?: "cnblogs" | "paper" | "pure";
+  noIndex?: boolean;
 }
 
-const { title: pageTitle, description: pageDescription, canonicalPath, pageType = "website", jsonLd } = Astro.props;
+const {
+  title: pageTitle,
+  description: pageDescription,
+  canonicalPath,
+  pageType = "website",
+  jsonLd,
+  skin = "pure",
+  noIndex = false,
+} = Astro.props;
 const title = pageTitle ? `${pageTitle} | ${siteConfig.shortName}` : siteConfig.name;
 const description = pageDescription ?? siteConfig.description;
 const path = (canonicalPath ?? Astro.url.pathname) === "/"
@@ -29,6 +39,7 @@ const structuredData = jsonLd
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content={pageType} />
     <meta property="og:site_name" content={siteConfig.name} />
@@ -41,14 +52,30 @@ const structuredData = jsonLd
     {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
     <link rel="icon" href="data:," />
     <title>{title}</title>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-JCW7SWRHHH"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "G-JCW7SWRHHH");
+    </script>
+    <script is:inline>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?56121033276aa4e7c98f77f08c3fbade";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
   </head>
-  <body>
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="brand" href="/">
-          <span class="brand-mark">NL</span>
-          <span>{siteConfig.name}</span>
-        </a>
+  <body class={`skin-${skin}`}>
+    <header class="blog-header">
+      <div class="blog-header-inner">
+        <div class="blog-heading">
+          <a class="blog-title" href="/">{siteConfig.name}</a>
+          <p>{siteConfig.subtitle}</p>
+        </div>
         <nav class="nav" aria-label="主导航">
           {siteConfig.nav.map((item) => (
             <a
@@ -60,16 +87,13 @@ const structuredData = jsonLd
         </nav>
       </div>
     </header>
-    <main class="page">
+    <main class="page site-main">
       <slot />
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <p>© {new Date().getFullYear()} {siteConfig.author} · {siteConfig.shortName}</p>
-        <p>
-          <a href={siteConfig.siblingSite.href} rel="me">{siteConfig.siblingSite.name}</a>
-          <span> · AI 工具与折腾实践</span>
-        </p>
+        <p>© {new Date().getFullYear()} {siteConfig.author} · {siteConfig.name}</p>
+        <p><a href={siteConfig.siblingSite.href} rel="me">{siteConfig.siblingSite.name}</a> · AI 工具与折腾实践</p>
       </div>
     </footer>
   </body>

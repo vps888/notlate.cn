@@ -14,7 +14,7 @@ const posts = defineCollection({
     sourceUrl: z.string().url().optional(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    category: z.enum(["AI 编译器", "推荐系统与机器学习", "工程与算法"]),
+    category: z.enum(["AI 编译器", "推荐系统", "计算广告", "折腾实践"]),
     tags: z.array(z.string()),
     featured: z.boolean().default(false),
   }),

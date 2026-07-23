@@ -1,5 +1,7 @@
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 
 function rehypeLazyImages() {
   return (tree) => {
@@ -22,7 +24,8 @@ export default defineConfig({
     inlineStylesheets: "always",
   },
   markdown: {
-    rehypePlugins: [rehypeLazyImages],
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [[rehypeKatex, { strict: false }], rehypeLazyImages],
   },
   integrations: [sitemap()],
 });

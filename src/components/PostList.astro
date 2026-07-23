@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { homeCategories, siteConfig } from "../site.config";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+
+const { posts } = Astro.props;
+const date = (value: Date) => value.toLocaleDateString("zh-CN", { timeZone: "UTC" });
+const categoryHref = (label: string) => {
+  const category = homeCategories.find((item) => item.label === label);
+  return category?.href ?? (label === "折腾实践" ? siteConfig.siblingSite.href : "/");
+};
+const categoryExternal = (label: string) => label === "折腾实践";
+---
+
+<ol class="post-list">
+  {posts.map((post) => (
+    <li class="post-item">
+      <article class="post-summary">
+        <h2><a href={`/blog/${post.data.slug}`}>{post.data.title}</a></h2>
+        <p class="post-meta">
+          <time datetime={post.data.pubDate.toISOString()}>发布于 {date(post.data.pubDate)}</time>
+          <span>·</span>
+          <a
+            href={categoryHref(post.data.category)}
+            target={categoryExternal(post.data.category) ? "_blank" : undefined}
+            rel={categoryExternal(post.data.category) ? "me" : undefined}
+          >{post.data.category}</a>
+          {post.data.tags.length > 1 && <><span>·</span><span>{post.data.tags.slice(1, 4).join("、")}</span></>}
+        </p>
+      </article>
+    </li>
+  ))}
+</ol>
