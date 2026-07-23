@@ -34,7 +34,7 @@ export const siteConfig = {
     href: "https://zhetengxia.com/",
   },
   nav: [
-    { label: "首页", href: "/" },
+    { label: "首页", href: "https://notlate.cn/" },
     ...homeCategories.map(({ label, href }) => ({ label, href })),
     { label: "折腾实践 ↗", href: "https://zhetengxia.com/", external: true },
   ],

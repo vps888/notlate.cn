@@ -50,14 +50,15 @@ const structuredData = jsonLd
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.svg" />
     <title>{title}</title>
   </head>
   <body class={`skin-${skin}`}>
     <header class="blog-header">
       <div class="blog-header-inner">
         <div class="blog-heading">
-          <a class="blog-title" href="/">{siteConfig.name}</a>
+          <a class="blog-title" href="https://notlate.cn/">{siteConfig.name}</a>
           <p>{siteConfig.subtitle}</p>
         </div>
         <nav class="nav" aria-label="主导航">
