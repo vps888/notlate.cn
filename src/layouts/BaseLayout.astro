@@ -50,8 +50,7 @@ const structuredData = jsonLd
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="/favicon.svg" />
+    <link rel="icon" href={siteConfig.avatar} type="image/jpeg" />
     <title>{title}</title>
   </head>
   <body class={`skin-${skin}`}>
