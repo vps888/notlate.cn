@@ -150,8 +150,8 @@ a { color: inherit; }
 .category-list a:hover, .latest-list a:hover { color: var(--accent); }
 .category-list span { color: #a3aab1; font-size: 12px; }
 .latest-list { counter-reset: latest; }
-.latest-list li { display: flex; gap: 7px; }
-.latest-list li::before { color: #a3aab1; content: counter(latest); counter-increment: latest; font-size: 12px; width: 15px; }
+.latest-list li { display: flex; gap: 4px; }
+.latest-list li::before { color: #a3aab1; content: counter(latest); counter-increment: latest; flex: 0 0 12px; font-size: 12px; text-align: right; }
 .sidebar-links { display: grid; gap: 6px; }
 
 /* Article pages keep the familiar cnblogs two-column reading layout. */
