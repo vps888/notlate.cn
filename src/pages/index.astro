@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BlogSidebar from "../components/BlogSidebar.astro";
+import Pagination from "../components/Pagination.astro";
 import PostList from "../components/PostList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { siteConfig } from "../site.config";
@@ -9,6 +10,7 @@ const posts = (await getCollection("posts")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const latestPosts = posts.slice(0, 7);
+const totalPages = Math.ceil(posts.length / 7);
 const homeUrl = "https://notlate.cn/";
 const jsonLd = [
   { "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, url: homeUrl, description: siteConfig.description, inLanguage: "zh-CN" },
@@ -26,11 +28,7 @@ const jsonLd = [
       </header>
 
       <PostList posts={latestPosts} />
-
-      <nav class="archive-more" aria-label="文章归档">
-        <span>首页展示最近 7 篇文章</span>
-        <a href="/blog">查看全部 {posts.length} 篇 →</a>
-      </nav>
+      <Pagination basePath="/" currentPage={1} totalPages={totalPages} />
     </section>
 
     <BlogSidebar posts={posts} />
