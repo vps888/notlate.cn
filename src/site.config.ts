@@ -21,15 +21,16 @@ export const homeCategories = [
 
 export const siteConfig = {
   // These values are taken from the original cnblogs export (blog_Config).
-  name: "生命在于折腾",
-  shortName: "生命在于折腾",
+  name: "AI技术小屋",
+  shortName: "AI技术小屋",
   domain: "notlate.cn",
-  subtitle: "生命不息，折腾不止。",
+  subtitle: "生命不息，AI不止",
   description: "MLIR、AI 编译器、推荐系统、计算广告与折腾实践文章。",
   author: "折腾侠",
+  authorDescription: "生命在于折腾",
   avatar: "https://cdn.jsdelivr.net/gh/notlate-cn/imgs/blogs/20220710_131340286_iOS.jpg",
   siblingSite: {
-    name: "折腾侠",
+    name: "瞎折腾小屋",
     description: "AI 工具、AI Coding、开发环境与网络折腾笔记",
     href: "https://zhetengxia.com/",
   },

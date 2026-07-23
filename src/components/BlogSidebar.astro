@@ -17,10 +17,9 @@ const countFor = (label: string) => posts.filter((post) => post.data.category ==
       <img src={siteConfig.avatar} alt={`${siteConfig.author}头像`} loading="lazy" decoding="async" />
       <div>
         <h2>{siteConfig.author}</h2>
-        <p>{siteConfig.name}</p>
+        <p>{siteConfig.authorDescription}</p>
       </div>
     </div>
-    <p class="profile-subtitle">{siteConfig.subtitle}</p>
     <a class="sidebar-link" href="/blog">查看全部 {posts.length} 篇文章 →</a>
   </section>
 
