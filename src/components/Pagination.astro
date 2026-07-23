@@ -6,7 +6,8 @@ interface Props {
 }
 
 const { basePath, currentPage, totalPages } = Astro.props;
-const hrefFor = (page: number) => page === 1 ? basePath : `${basePath}/page/${page}`;
+const normalizedBasePath = basePath === "/" ? "" : basePath.replace(/\/+$/, "");
+const hrefFor = (page: number) => page === 1 ? (basePath === "/" ? "/" : normalizedBasePath) : `${normalizedBasePath}/page/${page}`;
 ---
 
 {totalPages > 1 && (
