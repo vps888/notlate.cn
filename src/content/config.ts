@@ -10,7 +10,7 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     slug: z.string(),
-    legacyId: z.number().int(),
+    legacyId: z.number().int().optional(),
     sourceUrl: z.string().url().optional(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
