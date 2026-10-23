@@ -46,11 +46,7 @@ featured: false
 
 Unified Buffer/L1/L0 属于核内局部存储。跨 Die 交换中间结果时，通过全局地址交接，再由消费方加载到自己的局部存储。Cube L1 与 Vector Unified Buffer 的直接 CV 通道则属于 AI 子系统内部的数据复用能力。
 
-```text
-AI Core 的局部 Buffer ↔ 搬运单元 ↔ L2 / 片上互联 ↔ MI ↔ GM
-                                              ↕ D2D
-                                    对端 Die 的全局存储访问路径
-```
+![存储层级与跨 Die 数据通路](/images/ascend-950/memory-data-path.png)
 
 生产者与消费者通过任务依赖协调数据就绪和缓冲复用。访存优化包括 Die 亲和性、L2 hint 和 SDMA 的 CMO（预取、写回、无效化、冲刷）。
 
@@ -64,15 +60,7 @@ STARS 2.0 是全芯片的任务与资源调度中心，支持 Host 向 Device �
 * **Task 描述符**：描述任务类型、执行入口、参数和资源配置等控制信息。
 * **Kernel 代码与参数**：由软件装载和管理，目标计算核在派发后执行。
 
-```text
-Host / CANN：准备代码、参数和任务，提交任务流
-          ↓
-STARS：按配置预取 → 检查依赖 → 选择资源 → 派发
-          ↓ HSCB（面向 AIC/AIV 的专用控制通路）
-目标引擎：执行计算或搬运 → 上报完成状态
-          ↓
-STARS / 运行时：推进任务流，满足后续任务的依赖
-```
+![STARS 任务调度流程](/images/ascend-950/stars-task-flow.png)
 
 STARS 可调度 AIC、AIV、AI CPU、DVPP、SDMA、UB 和 CCU 等资源；公开并发规格包括 **64 个 UB Jetty、32 个 CCU 任务、32 个 SDMA 通道**。
 
@@ -94,14 +82,7 @@ STARS 还支持最多 **8 个 Group**，可按 Die 划分计算资源做亲和�
 
 整芯片左右两侧 IO Die 共提供 **72 Lane HiLink SerDes**，划分为 **18 个 X4 Port**，总物理双向带宽为 **2.016 TB/s（标称约 2.0 TB/s）**。
 
-```text
-整芯片共享 SerDes 资源：18 个 X4 Port（72 Lane）
-   ├─ PCIe 5.0 x16：启用时占用 4 个 X4 Port
-   ├─ UBoE 2 × 400G：启用时占用 2 个 X4 Port
-   └─ 原生 UB：使用其余端口，数量随配置变化
-
-同时启用 PCIe 与 UBoE：18 − 4 − 2 = 12 个原生 UB Port
-```
+![SerDes 端口资源分配](/images/ascend-950/serdes-port-budget.png)
 
 ### 3.1 端口物理复用机制
 
@@ -127,13 +108,7 @@ STARS 还支持最多 **8 个 Group**，可按 Die 划分计算资源做亲和�
 
 **UB Memory 与 URMA 是访问语义，HiLink 是高速互联底座，UBoE 是 UB 的以太网承载方式，PCIe 是另一套总线协议，CCU 则是集合通信卸载引擎。**
 
-```text
-细粒度共享访存 ── UB Memory ─────────── 原生 UB 链路 / UB Switch
-异步搬运与消息 ── URMA ─────────────── 原生 UB 或 UBoE / 以太网
-集合通信任务   ── CCU ─┬─ URMA 搬运 ── 上述通信路径
-                      └─ Reduce Unit 规约计算
-主机交互       ── PCIe DMA / MMIO ──── Host 与 Device
-```
+![通信语义、硬件卸载与传输路径](/images/ascend-950/interconnect-layers.png)
 
 URMA 提供类似 RDMA 的异步远程内存访问能力，以 Jetty 为通信入口。
 
